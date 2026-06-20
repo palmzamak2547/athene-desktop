@@ -4,38 +4,55 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Athene Desktop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="bar">
+    <!-- left: brand + threads -->
+    <aside class="sidebar">
       <div class="brand">
         <span class="logo">A</span>
-        <span class="name">Athene</span>
-        <span class="tag">desktop · local-first · free</span>
+        <span class="wordmark">Athene</span>
       </div>
-      <div class="controls">
+      <button id="new" class="new-chat">＋ New chat</button>
+      <div class="threads-label">Recent</div>
+      <ul id="threads" class="threads"></ul>
+      <div class="sidebar-foot">
         <span id="engine" class="engine">checking engines…</span>
+      </div>
+    </aside>
+
+    <!-- right: chat -->
+    <main class="chat">
+      <header class="topbar">
+        <span class="tag">desktop · local-first · free</span>
         <select id="mode" title="Which engine to use">
           <option value="auto">Auto (local → cloud)</option>
           <option value="local">Local only (Ollama)</option>
           <option value="cloud">Cloud only (free)</option>
         </select>
-        <button id="new" title="New chat">New</button>
-      </div>
-    </header>
+      </header>
 
-    <main id="messages" class="messages">
-      <div class="empty" id="empty">
-        <div class="empty-logo">A</div>
-        <h1>Ask Athene</h1>
-        <p>Runs your local Ollama models when available, free frontier models otherwise. Private by default.</p>
+      <div id="messages" class="messages">
+        <div class="empty" id="empty">
+          <div class="empty-logo">A</div>
+          <h1>Ask Athene</h1>
+          <p>Runs your local Ollama models when available, free frontier models otherwise. Private by default.</p>
+        </div>
       </div>
+
+      <footer class="composer">
+        <div class="composer-inner">
+          <textarea id="input" rows="1" placeholder="Message Athene…  (Enter to send, Shift+Enter for a new line)"></textarea>
+          <button id="send">Send</button>
+        </div>
+      </footer>
     </main>
-
-    <footer class="composer">
-      <textarea id="input" rows="1" placeholder="Message Athene…  (Enter to send, Shift+Enter for a new line)"></textarea>
-      <button id="send">Send</button>
-    </footer>
 
     <script type="module" src="./renderer.js"></script>
   </body>

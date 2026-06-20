@@ -11,9 +11,26 @@ const sendEl = $("send");
 const modeEl = $("mode");
 const engineEl = $("engine");
 
-const history = []; // [{role, content}]
+let history = []; // the active thread's [{role, content}]
 let streaming = false;
 let current = null; // the assistant bubble being streamed into
+
+// ---- threads (left sidebar), persisted to localStorage ----
+const THREADS_KEY = "athene.threads";
+let threads = [];
+let activeId = null;
+try {
+  threads = JSON.parse(localStorage.getItem(THREADS_KEY) || "[]");
+} catch {
+  threads = [];
+}
+const persistThreads = () => {
+  try {
+    localStorage.setItem(THREADS_KEY, JSON.stringify(threads.slice(0, 50)));
+  } catch {
+    /* ignore quota */
+  }
+};
 
 // ---- light, safe markdown: code fences + inline code, everything else text ----
 function renderMarkdown(text) {
@@ -103,12 +120,79 @@ function send() {
     streaming = false;
     sendEl.disabled = false;
     current = null;
+    saveActive();
   };
 }
 
 function autogrow() {
   inputEl.style.height = "auto";
   inputEl.style.height = Math.min(inputEl.scrollHeight, 200) + "px";
+}
+
+// ---- threads ----
+function showEmpty() {
+  const e = document.createElement("div");
+  e.className = "empty";
+  e.innerHTML =
+    '<div class="empty-logo">A</div><h1>Ask Athene</h1><p>Runs your local Ollama models when available, free frontier models otherwise. Private by default.</p>';
+  messagesEl.appendChild(e);
+}
+function renderThreads() {
+  const ul = $("threads");
+  ul.innerHTML = "";
+  for (const t of threads) {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.textContent = t.title || "New chat";
+    if (t.id === activeId) b.className = "active";
+    b.onclick = () => loadThread(t.id);
+    li.appendChild(b);
+    ul.appendChild(li);
+  }
+}
+function renderMessages() {
+  messagesEl.innerHTML = "";
+  if (history.length === 0) {
+    showEmpty();
+    return;
+  }
+  for (const m of history) {
+    const bubble = addRow(m.role);
+    if (m.role === "user") bubble.textContent = m.content;
+    else setBubble(bubble, m.content, false);
+  }
+}
+function newChat() {
+  if (streaming) return;
+  const t = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title: "", messages: [] };
+  threads.unshift(t);
+  activeId = t.id;
+  history = [];
+  messagesEl.innerHTML = "";
+  showEmpty();
+  renderThreads();
+  inputEl.focus();
+}
+function loadThread(id) {
+  if (streaming) return;
+  const t = threads.find((x) => x.id === id);
+  if (!t) return;
+  activeId = id;
+  history = t.messages.slice();
+  renderMessages();
+  renderThreads();
+}
+function saveActive() {
+  let t = threads.find((x) => x.id === activeId);
+  if (!t) {
+    t = { id: activeId || Date.now().toString(36), title: "", messages: [] };
+    threads.unshift(t);
+    activeId = t.id;
+  }
+  t.messages = history.slice();
+  if (!t.title && history[0]) t.title = history[0].content.slice(0, 40);
+  persistThreads();
+  renderThreads();
 }
 
 // ---- wire up ----
@@ -145,11 +229,9 @@ inputEl.addEventListener("keydown", (e) => {
     send();
   }
 });
-$("new").addEventListener("click", () => {
-  history.length = 0;
-  messagesEl.innerHTML = "";
-  const e = document.createElement("div");
-  e.className = "empty";
-  e.innerHTML = '<div class="empty-logo">A</div><h1>Ask Athene</h1><p>Runs your local Ollama models when available, free frontier models otherwise. Private by default.</p>';
-  messagesEl.appendChild(e);
-});
+$("new").addEventListener("click", newChat);
+
+// startup: resume the most recent thread, or start a fresh one.
+renderThreads();
+if (threads.length && threads[0].messages.length) loadThread(threads[0].id);
+else newChat();
