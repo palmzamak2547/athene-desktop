@@ -1,0 +1,19 @@
+{
+  "name": "athene-desktop",
+  "version": "0.1.0",
+  "description": "Athene Desktop — a free, local-first AI chat app on the open Athene engine. Part of the Athene suite.",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "lint": "node --check main.js && node --check lib/providers.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "^1.0.0",
+    "ai": "^5.0.0"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}
