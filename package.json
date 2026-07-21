@@ -7,9 +7,11 @@
   "author": "Anuthin Danoi",
   "scripts": {
     "start": "electron .",
-    "lint": "node --check main.js && node --check lib/providers.js && node --check lib/engine.js",
+    "prepare-engine": "node scripts/prepare-engine.mjs",
+    "lint": "node --check main.js && node --check preload.cjs && node --check lib/providers.js && node --check lib/engine.js && node --check lib/config.js && node --check renderer/renderer.js && node --check scripts/prepare-engine.mjs && node --check scripts/before-pack.cjs && node --check scripts/make-portable-zip.mjs",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --win nsis"
+    "dist": "electron-builder --win nsis zip",
+    "portable": "npm run pack && node scripts/make-portable-zip.mjs"
   },
   "license": "MIT",
   "dependencies": {
@@ -23,6 +25,7 @@
   "build": {
     "appId": "com.athene.desktop",
     "productName": "Athene",
+    "beforePack": "scripts/before-pack.cjs",
     "files": [
       "main.js",
       "preload.cjs",
@@ -30,13 +33,23 @@
       "renderer/**/*",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": "vendor/athene",
+        "to": "athene",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
     "directories": {
       "output": "dist"
     },
     "win": {
       "icon": "renderer/brand/icon-512.png",
       "target": [
-        "nsis"
+        "nsis",
+        "zip"
       ],
       "artifactName": "Athene-Setup-${version}.${ext}"
     },

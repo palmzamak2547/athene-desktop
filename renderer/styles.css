@@ -379,6 +379,218 @@ select {
   }
 }
 
+/* key / settings button under the engine pill */
+.settings-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  margin-top: 8px;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.settings-btn:hover {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+.settings-btn svg {
+  flex: 0 0 auto;
+  color: var(--brand-bright);
+}
+
+/* ── onboarding overlay (BYO key) ───────────────────────────────────────── */
+.onboarding {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 10, 9, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fade 0.28s var(--ease) both;
+}
+.onboarding[hidden] {
+  display: none;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.onboarding-card {
+  width: 100%;
+  max-width: 460px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background:
+    radial-gradient(
+      600px 220px at 80% -10%,
+      rgba(14, 165, 233, 0.08),
+      transparent 60%
+    ),
+    var(--panel);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-xl);
+  padding: 30px 30px 24px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  animation: rise 0.34s var(--ease) both;
+}
+.onboarding-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  background:
+    url("./brand/owl-mark-light.svg") center / 66% no-repeat,
+    linear-gradient(150deg, var(--brand-bright), var(--brand));
+  box-shadow:
+    0 8px 30px rgba(14, 165, 233, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.onboarding-title {
+  font-family: var(--display);
+  color: var(--text);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 18px 0 8px;
+}
+.onboarding-lead {
+  color: var(--muted);
+  line-height: 1.62;
+  margin: 0 0 22px;
+}
+.onboarding-lead strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.onboarding-label {
+  display: block;
+  color: var(--faint);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 14px 0 6px;
+}
+.onboarding-select {
+  display: flex;
+  width: 100%;
+}
+.onboarding-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  padding: 10px 32px 10px 13px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.onboarding-select select:hover {
+  border-color: rgba(231, 229, 228, 0.24);
+}
+.onboarding-input {
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  padding: 11px 13px;
+  font-size: 13px;
+  font-family: var(--mono);
+  outline: none;
+}
+.onboarding-input:focus {
+  border-color: var(--brand-ring);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.13);
+}
+.onboarding-getkey {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--brand-bright);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.onboarding-getkey:hover {
+  text-decoration: underline;
+}
+.onboarding-msg {
+  min-height: 18px;
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.onboarding-msg.is-error {
+  color: var(--amber);
+}
+.onboarding-msg.is-ok {
+  color: var(--brand-bright);
+}
+.onboarding-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+.onboarding-cancel {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.onboarding-cancel:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+.onboarding-save {
+  background: linear-gradient(150deg, var(--brand-bright), var(--brand));
+  color: var(--brand-deep);
+  border: none;
+  border-radius: var(--r);
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    0 2px 10px rgba(14, 165, 233, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.onboarding-save:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+.onboarding-save:disabled {
+  filter: grayscale(0.4);
+  opacity: 0.7;
+  cursor: default;
+}
+.onboarding-note {
+  color: var(--faint);
+  font-size: 11.5px;
+  line-height: 1.55;
+  margin: 18px 0 0;
+}
+
 /* ── chat column ────────────────────────────────────────────────────────── */
 .chat {
   display: flex;

@@ -23,6 +23,13 @@
           <span class="engine-dot" aria-hidden="true"></span>
           <span id="engine" class="engine">checking engines…</span>
         </div>
+        <button id="settings" class="settings-btn" type="button" title="Model key & settings" aria-label="Model key & settings">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2l1.09 3.36a1 1 0 0 0 .55.62l3.2 1.4-1.4 3.2a1 1 0 0 0 0 .84l1.4 3.2-3.2 1.4a1 1 0 0 0-.55.62L14 22l-2-2h-2l-2 2-1.09-3.36a1 1 0 0 0-.55-.62l-3.2-1.4 1.4-3.2a1 1 0 0 0 0-.84L2 8.98l3.2-1.4a1 1 0 0 0 .55-.62L7 3.6"/>
+            <circle cx="12" cy="11" r="3"/>
+          </svg>
+          <span>Key</span>
+        </button>
       </div>
     </aside>
 
@@ -113,6 +120,63 @@
         </div>
       </footer>
     </main>
+
+    <!-- first-run / change-key onboarding overlay (hidden until needed) -->
+    <div id="onboarding" class="onboarding" hidden>
+      <div class="onboarding-card">
+        <div class="onboarding-logo" aria-hidden="true"></div>
+        <h2 class="onboarding-title">Bring your own free key</h2>
+        <p class="onboarding-lead">
+          Athene runs its real agent on <strong>free</strong> frontier models —
+          you just bring a key. Get one free in a minute, paste it below, and
+          start chatting. It's stored only on this machine.
+        </p>
+
+        <label class="onboarding-label" for="key-provider">Provider</label>
+        <div class="select-wrap onboarding-select">
+          <select id="key-provider">
+            <option value="NVIDIA_API_KEY">NVIDIA NIM — free at build.nvidia.com</option>
+            <option value="GROQ_API_KEY">Groq — free at console.groq.com</option>
+            <option value="CEREBRAS_API_KEY">Cerebras — free at cloud.cerebras.ai</option>
+            <option value="OPENROUTER_API_KEY">OpenRouter (free models)</option>
+            <option value="GEMINI_API_KEY">Google Gemini — aistudio.google.com</option>
+            <option value="HF_TOKEN">Hugging Face token</option>
+          </select>
+          <span class="select-caret" aria-hidden="true"></span>
+        </div>
+
+        <label class="onboarding-label" for="key-input">API key</label>
+        <input
+          id="key-input"
+          class="onboarding-input"
+          type="password"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="nvapi-…"
+        />
+
+        <a id="get-key" class="onboarding-getkey" href="#" role="button">
+          Get a free NVIDIA NIM key →
+        </a>
+
+        <div id="onboarding-msg" class="onboarding-msg" role="status"></div>
+
+        <div class="onboarding-actions">
+          <button id="key-cancel" class="onboarding-cancel" type="button" hidden>
+            Cancel
+          </button>
+          <button id="key-save" class="onboarding-save" type="button">
+            Save & start
+          </button>
+        </div>
+
+        <p class="onboarding-note">
+          Your key is written to a local config file in this app's user-data
+          folder. It never leaves your machine and is never sent anywhere except
+          the model provider you chose.
+        </p>
+      </div>
+    </div>
 
     <script type="module" src="./renderer.js"></script>
   </body>

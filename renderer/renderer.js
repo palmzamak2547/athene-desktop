@@ -315,42 +315,155 @@ if (api) {
   api.onStatus((msg) => statusLine(msg));
 
   const enginePill = engineEl.closest(".engine-pill");
+  let needsKey = false; // last-known: no model key set anywhere
 
   // Show the real Athene engine (serve child) status; fall back to naming the
-  // direct engines if the agent server didn't come up.
+  // direct engines if the agent server didn't come up. Returns true when ready.
   const showEngine = async () => {
     try {
       const e = await api.getEngine();
+      needsKey = !!e?.needsKey;
       if (e?.ready) {
         engineEl.textContent = `Athene agent, ${e.writable ? "writable" : "read-only"}`;
         engineEl.title = (e.engines && e.engines[0]) || "engine";
         enginePill?.classList.add("online");
         return true;
       }
+      enginePill?.classList.remove("online");
+      if (needsKey) engineEl.textContent = "no key — click Key to add one";
     } catch {
       /* fall through */
     }
     return false;
   };
-  showEngine().then(async (ok) => {
-    if (ok) return;
-    // Engine still starting or unavailable — retry briefly, then show direct-mode status.
-    let tries = 0;
-    const iv = setInterval(async () => {
-      if ((await showEngine()) || ++tries > 10) {
-        clearInterval(iv);
-        if (tries > 10) {
-          const { ollama, cloudKeys } = await api.models();
-          const bits = [];
-          if (ollama?.length) bits.push(`${ollama.length} local`);
-          if (cloudKeys?.length) bits.push(`${cloudKeys.length} cloud`);
-          engineEl.textContent = bits.length
-            ? "agent down — " + bits.join(", ") + " direct"
-            : "no engine — set NVIDIA_API_KEY or start Ollama";
+  const pollEngine = () =>
+    showEngine().then(async (ok) => {
+      if (ok) return;
+      // Engine still starting / needs a key — retry briefly, then show status.
+      let tries = 0;
+      const iv = setInterval(async () => {
+        if ((await showEngine()) || ++tries > 10) {
+          clearInterval(iv);
+          if (tries > 10 && !needsKey) {
+            const { ollama, cloudKeys } = await api.models();
+            const bits = [];
+            if (ollama?.length) bits.push(`${ollama.length} local`);
+            if (cloudKeys?.length) bits.push(`${cloudKeys.length} cloud`);
+            engineEl.textContent = bits.length
+              ? "agent down — " + bits.join(", ") + " direct"
+              : "no engine — click Key or start Ollama";
+          }
         }
-      }
-    }, 800);
+      }, 800);
+    });
+  pollEngine();
+
+  // ---- BYO-key onboarding overlay ----
+  const overlay = $("onboarding");
+  const provEl = $("key-provider");
+  const keyEl = $("key-input");
+  const saveEl = $("key-save");
+  const cancelEl = $("key-cancel");
+  const getKeyEl = $("get-key");
+  const msgEl = $("onboarding-msg");
+  const settingsEl = $("settings");
+
+  // provider → { where to get a free key, input placeholder }
+  const PROVIDERS = {
+    NVIDIA_API_KEY: { url: "https://build.nvidia.com", label: "NVIDIA NIM", ph: "nvapi-…" },
+    GROQ_API_KEY: { url: "https://console.groq.com/keys", label: "Groq", ph: "gsk_…" },
+    CEREBRAS_API_KEY: { url: "https://cloud.cerebras.ai", label: "Cerebras", ph: "csk-…" },
+    OPENROUTER_API_KEY: { url: "https://openrouter.ai/keys", label: "OpenRouter", ph: "sk-or-…" },
+    GEMINI_API_KEY: { url: "https://aistudio.google.com/app/apikey", label: "Gemini", ph: "AIza…" },
+    HF_TOKEN: { url: "https://huggingface.co/settings/tokens", label: "Hugging Face", ph: "hf_…" },
+  };
+  const syncProvider = () => {
+    const p = PROVIDERS[provEl.value] || PROVIDERS.NVIDIA_API_KEY;
+    keyEl.placeholder = p.ph;
+    getKeyEl.textContent = `Get a free ${p.label} key →`;
+  };
+  const setMsg = (text, kind) => {
+    msgEl.textContent = text || "";
+    msgEl.className = "onboarding-msg" + (kind ? " is-" + kind : "");
+  };
+  const openOnboarding = (firstRun) => {
+    overlay.hidden = false;
+    cancelEl.hidden = !!firstRun; // no "cancel" on first run (no key yet to keep)
+    setMsg("");
+    syncProvider();
+    keyEl.value = "";
+    keyEl.focus();
+  };
+  const closeOnboarding = () => {
+    overlay.hidden = true;
+  };
+
+  provEl.addEventListener("change", syncProvider);
+  getKeyEl.addEventListener("click", (e) => {
+    e.preventDefault();
+    const p = PROVIDERS[provEl.value] || PROVIDERS.NVIDIA_API_KEY;
+    api.openExternal(p.url);
   });
+  settingsEl.addEventListener("click", async () => {
+    let firstRun = false;
+    try {
+      const s = await api.configStatus();
+      firstRun = !s?.hasKey;
+    } catch {
+      /* ignore */
+    }
+    openOnboarding(firstRun);
+  });
+  cancelEl.addEventListener("click", closeOnboarding);
+  keyEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      saveEl.click();
+    }
+  });
+  saveEl.addEventListener("click", async () => {
+    const value = keyEl.value.trim();
+    if (!value) {
+      setMsg("Paste a key first.", "error");
+      keyEl.focus();
+      return;
+    }
+    saveEl.disabled = true;
+    setMsg("Saving & starting the engine…", "");
+    try {
+      const r = await api.saveKey(provEl.value, value);
+      if (!r?.ok) {
+        setMsg(r?.error || "Could not save the key.", "error");
+        saveEl.disabled = false;
+        return;
+      }
+      if (r.engineReady) {
+        setMsg("Engine ready — you're set.", "ok");
+        setTimeout(closeOnboarding, 650);
+      } else if (r.needsKey) {
+        setMsg("Key didn't register — check it and try again.", "error");
+      } else {
+        // saved; engine still spinning up — close and let the pill poll it.
+        setMsg("Saved. Starting…", "ok");
+        setTimeout(closeOnboarding, 650);
+      }
+      pollEngine();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : String(e), "error");
+    } finally {
+      saveEl.disabled = false;
+    }
+  });
+
+  // First run: no key set anywhere → show onboarding immediately.
+  (async () => {
+    try {
+      const s = await api.configStatus();
+      if (!s?.hasKey) openOnboarding(true);
+    } catch {
+      /* ignore */
+    }
+  })();
 } else {
   engineEl.textContent = "preview (run `npm start` for the full app)";
   sendEl.disabled = true;

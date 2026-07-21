@@ -18,4 +18,14 @@ contextBridge.exposeInMainWorld("athene", {
   getEngine: () => ipcRenderer.invoke("engine:info"),
   // Which DIRECT engines are available (local Ollama + which cloud keys are set).
   models: () => ipcRenderer.invoke("models"),
+
+  // --- BYO-key config (onboarding + settings) ---
+  // Whether a key is set + which providers (never returns the secret value).
+  configStatus: () => ipcRenderer.invoke("config:status"),
+  // Save one provider key ({env, value}); restarts the engine, returns new status.
+  saveKey: (env, value) => ipcRenderer.invoke("config:saveKey", { env, value }),
+  // Clear all stored keys; restarts the engine, returns new status.
+  clearKeys: () => ipcRenderer.invoke("config:clearKeys"),
+  // Open a URL in the system browser (for the "get a free key" link).
+  openExternal: (url) => ipcRenderer.invoke("open:external", url),
 });

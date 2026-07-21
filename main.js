@@ -11,6 +11,7 @@ import { fileURLToPath } from "node:url";
 import { streamText } from "ai";
 import { candidates, ollamaModels } from "./lib/providers.js";
 import { resolveAtheneCli, startAtheneServer, streamAtheneChat } from "./lib/engine.js";
+import { getEffectiveKeys, keyStatus, saveKey, clearStoredKeys } from "./lib/config.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -18,11 +19,20 @@ const SYSTEM =
   "You are Athene, a helpful, concise AI assistant running locally in the user's desktop app. Be direct and useful. Use Markdown when it helps.";
 
 // The Athene serve child + its connection info. Populated by startEngine().
-let engine = { child: null, baseUrl: "", token: "", health: null, cliPath: null, error: "", writable: false };
+let engine = {
+  child: null,
+  baseUrl: "",
+  token: "",
+  health: null,
+  cliPath: null,
+  error: "",
+  writable: false,
+  needsKey: false, // true when no model key is set → renderer shows onboarding
+};
 
 // Spawn `athene serve` and wait for it to be healthy. Never throws — on failure
 // it records `engine.error`, and the app still runs (the renderer can fall back
-// to the Local/Cloud direct modes).
+// to the Local/Cloud direct modes, or the onboarding overlay).
 async function startEngine() {
   const cliPath = resolveAtheneCli({
     resourcesPath: process.resourcesPath,
@@ -35,6 +45,19 @@ async function startEngine() {
     console.error("[engine] " + engine.error);
     return;
   }
+
+  // BYO-key: env keys (dev/power users) overlaid with the key the user stored on
+  // this machine. If there is NO key at all, don't spawn a dead engine — flag it
+  // so the renderer shows the first-run onboarding overlay instead of an error.
+  const keys = getEffectiveKeys(app.getPath("userData"));
+  if (Object.keys(keys).length === 0) {
+    engine.needsKey = true;
+    engine.error = "";
+    console.log("[engine] no model key — showing onboarding (BYO free key).");
+    return;
+  }
+  engine.needsKey = false;
+
   // read-only agent by default; ATHENE_DESKTOP_YOLO=1 lets it write (auto-approved).
   const yolo = process.env.ATHENE_DESKTOP_YOLO === "1";
   // The dir the agent inspects/operates on. Read-only unless yolo; home is a safe default.
@@ -46,6 +69,7 @@ async function startEngine() {
       runAsNode: true, // …run as Node (works packaged, no system Node needed)
       cwd,
       yolo,
+      extraEnv: keys, // inject the BYO key(s) into the engine child process
       logger: (m) => process.stdout.write("[athene] " + m + "\n"),
     });
     engine.child = started.child;
@@ -73,6 +97,18 @@ function stopEngine() {
     /* ignore */
   }
   engine.child = null;
+}
+
+// Restart the engine from scratch (e.g. after the user saves/changes a key).
+// Resets connection state, then re-runs startEngine with the new effective keys.
+async function restartEngine() {
+  stopEngine();
+  engine.baseUrl = "";
+  engine.token = "";
+  engine.health = null;
+  engine.writable = false;
+  engine.error = "";
+  await startEngine();
 }
 
 function createWindow() {
@@ -109,8 +145,62 @@ ipcMain.handle("engine:info", async () => ({
   writable: engine.writable,
   engines: engine.health?.engines || [],
   cliPath: engine.cliPath,
+  needsKey: engine.needsKey,
   error: engine.error,
 }));
+
+// --- BYO-key config (the first-run onboarding + a Settings affordance) ---
+// Status only ever reports WHICH providers are set + from where — never the
+// secret value itself.
+ipcMain.handle("config:status", async () => ({
+  ...keyStatus(app.getPath("userData")),
+  engineReady: !!engine.health,
+  needsKey: engine.needsKey,
+  engineError: engine.error,
+}));
+
+// Save one provider key, then restart the engine so it picks the key up. Returns
+// the new status + whether the engine came up.
+ipcMain.handle("config:saveKey", async (_e, payload) => {
+  const envName = String(payload?.env || "");
+  const value = String(payload?.value || "");
+  try {
+    saveKey(app.getPath("userData"), envName, value);
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+  await restartEngine();
+  return {
+    ok: true,
+    ...keyStatus(app.getPath("userData")),
+    engineReady: !!engine.health,
+    needsKey: engine.needsKey,
+    engineError: engine.error,
+  };
+});
+
+// Clear all stored keys (env keys, if any, remain) and restart the engine.
+ipcMain.handle("config:clearKeys", async () => {
+  clearStoredKeys(app.getPath("userData"));
+  await restartEngine();
+  return {
+    ok: true,
+    ...keyStatus(app.getPath("userData")),
+    engineReady: !!engine.health,
+    needsKey: engine.needsKey,
+    engineError: engine.error,
+  };
+});
+
+// Open an external URL in the system browser (used by the onboarding link).
+ipcMain.handle("open:external", async (_e, url) => {
+  try {
+    const u = new URL(String(url));
+    if (u.protocol === "https:" || u.protocol === "http:") await shell.openExternal(u.href);
+  } catch {
+    /* ignore bad URL */
+  }
+});
 
 // Which DIRECT engines are available (for the Local/Cloud fallback modes).
 ipcMain.handle("models", async () => {
@@ -140,12 +230,15 @@ ipcMain.on("chat", async (event, payload) => {
   // DEFAULT: the real Athene agent (serve child), streaming text + tool activity.
   if (mode.startsWith("athene")) {
     if (!engine.health) {
-      send(
-        "chat:error",
-        engine.error
-          ? `Athene engine unavailable: ${engine.error}  (or pick Local/Cloud in the selector).`
-          : "Athene engine is still starting — try again in a moment, or pick Local/Cloud.",
-      );
+      let msg;
+      if (engine.needsKey) {
+        msg = "Add a free model key to start Athene — click the key/settings button (get one free at build.nvidia.com).";
+      } else if (engine.error) {
+        msg = `Athene engine unavailable: ${engine.error}  (or pick Local/Cloud in the selector).`;
+      } else {
+        msg = "Athene engine is still starting — try again in a moment, or pick Local/Cloud.";
+      }
+      send("chat:error", msg);
       return;
     }
     try {
