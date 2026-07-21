@@ -222,17 +222,17 @@ select {
   gap: 11px;
   padding: 6px 8px 18px;
 }
+/* brand mark — the real white owl (Athena's owl) resting on the sky chip */
 .logo {
   display: grid;
   place-items: center;
   width: 30px;
   height: 30px;
   border-radius: 9px;
-  background: linear-gradient(150deg, var(--brand-bright), var(--brand));
-  color: var(--brand-deep);
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 18px;
+  background:
+    url("./brand/owl-mark-light.svg") center / 72% no-repeat,
+    linear-gradient(150deg, var(--brand-bright), var(--brand));
+  font-size: 0; /* the owl is the mark — no glyph */
   line-height: 1;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.5),
@@ -495,11 +495,10 @@ select {
   user-select: none;
 }
 .row.assistant .avatar {
-  background: linear-gradient(150deg, var(--brand-bright), var(--brand));
-  color: var(--brand-deep);
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 16px;
+  background:
+    url("./brand/owl-mark-light.svg") center / 72% no-repeat,
+    linear-gradient(150deg, var(--brand-bright), var(--brand));
+  font-size: 0; /* the owl is the mark — hides the placeholder glyph */
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.22);
@@ -691,11 +690,10 @@ select {
   height: 58px;
   margin: 0 auto 20px;
   border-radius: 17px;
-  background: linear-gradient(150deg, var(--brand-bright), var(--brand));
-  color: var(--brand-deep);
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 30px;
+  background:
+    url("./brand/owl-mark-light.svg") center / 66% no-repeat,
+    linear-gradient(150deg, var(--brand-bright), var(--brand));
+  font-size: 0; /* the owl is the mark — no glyph */
   line-height: 1;
   box-shadow:
     0 8px 30px rgba(14, 165, 233, 0.22),
