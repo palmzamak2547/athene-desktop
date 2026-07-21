@@ -81,7 +81,7 @@ function createWindow() {
     height: 720,
     minWidth: 720,
     minHeight: 480,
-    backgroundColor: "#12100e",
+    backgroundColor: "#1c1917",
     title: "Athene Desktop",
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"),

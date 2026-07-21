@@ -1,101 +1,134 @@
 /* ============================================================================
-   Athene Desktop — the Athene design language.
-   Editorial · warm-dark · Fraunces display + Inter UI + Geist Mono for code.
-   Emerald accent on a warm near-black. Fonts are bundled locally (offline-safe).
+   Athene Desktop — the ai.cuvetsmo.com design language (one unified suite brand).
+   Editorial · warm-STONE dark · Noto Serif Thai display + IBM Plex Sans Thai UI
+   + IBM Plex Mono for code. SKY accent on warm stone. Bilingual TH/EN.
+   Fonts bundled locally as woff2 (latin + thai subsets, offline-safe · OFL).
    ============================================================================ */
 
-/* ── bundled fonts (variable woff2, latin + latin-ext) ──────────────────── */
+/* ── bundled fonts — sky/stone brand ────────────────────────────────────── */
+/* latin unicode-range (shared): U+0000-00FF … U+FFFD                         */
+/* thai  unicode-range (shared): U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC */
+
+/* IBM Plex Sans Thai — UI sans (400 / 500 / 600), static weights */
 @font-face {
-  font-family: "Inter var";
+  font-family: "IBM Plex Sans Thai";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url("./fonts/inter.woff2") format("woff2");
+  src: url("./fonts/plexsansthai-400-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: "Inter var";
+  font-family: "IBM Plex Sans Thai";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url("./fonts/inter-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
-    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
-    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url("./fonts/plexsansthai-400-thai.woff2") format("woff2");
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
 }
 @font-face {
-  font-family: "Fraunces var";
+  font-family: "IBM Plex Sans Thai";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 500;
   font-display: swap;
-  src: url("./fonts/fraunces.woff2") format("woff2");
+  src: url("./fonts/plexsansthai-500-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: "Fraunces var";
+  font-family: "IBM Plex Sans Thai";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 500;
   font-display: swap;
-  src: url("./fonts/fraunces-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
-    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
-    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url("./fonts/plexsansthai-500-thai.woff2") format("woff2");
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
 }
 @font-face {
-  font-family: "Geist Mono var";
+  font-family: "IBM Plex Sans Thai";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 600;
   font-display: swap;
-  src: url("./fonts/geistmono.woff2") format("woff2");
+  src: url("./fonts/plexsansthai-600-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: "Geist Mono var";
+  font-family: "IBM Plex Sans Thai";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./fonts/plexsansthai-600-thai.woff2") format("woff2");
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+
+/* Noto Serif Thai — display / wordmark / hero (variable, one file per subset) */
+@font-face {
+  font-family: "Noto Serif Thai";
   font-style: normal;
   font-weight: 100 900;
+  font-stretch: 100%;
   font-display: swap;
-  src: url("./fonts/geistmono-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
-    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
-    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url("./fonts/notoserifthai-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Noto Serif Thai";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("./fonts/notoserifthai-thai.woff2") format("woff2");
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
+}
+
+/* IBM Plex Mono — code / engine text (400, latin — code is ASCII) */
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./fonts/plexmono-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ── design tokens ──────────────────────────────────────────────────────── */
 :root {
-  /* warm near-black surfaces (never pure #000) */
-  --bg: #12100e;
-  --sidebar: #0e0c0a;
-  --panel: #17150f;
-  --surface: #1b1813;
-  --surface-2: #232019;
-  --surface-3: #2c2820;
-  --line: rgba(240, 232, 218, 0.08);
-  --line-strong: rgba(240, 232, 218, 0.15);
+  /* warm STONE dark surfaces (never pure #000) — matches ai.cuvetsmo.com */
+  --bg: #1c1917; /* stone-900 (app bg) */
+  --sidebar: #0c0a09; /* stone-950 (deepest) */
+  --panel: #292524; /* stone-800 */
+  --surface: #292524; /* stone-800 (raised surface) */
+  --surface-2: #322e2b; /* stone-800→700 (hover) */
+  --surface-3: #44403c; /* stone-700 */
+  --line: rgba(231, 229, 228, 0.08); /* stone-200 hairline */
+  --line-strong: rgba(231, 229, 228, 0.15);
 
   /* type */
-  --text: #efece5;
-  --muted: #a49d90;
-  --faint: #6f685c;
+  --text: #e7e5e4; /* fg1 (stone-200) */
+  --muted: #a8a29e; /* fg3 (stone-400) */
+  --faint: #78716c; /* stone-500 */
 
-  /* emerald */
-  --brand: #10b981;
-  --brand-bright: #34d399;
-  --brand-deep: #052016;
-  --brand-wash: rgba(16, 185, 129, 0.1);
-  --brand-ring: rgba(16, 185, 129, 0.45);
+  /* sky accent (the ai.cuvetsmo.com "smo" scale) */
+  --brand: #0284c7; /* smo-600 (primary) */
+  --brand-bright: #0ea5e9; /* smo-500 (bright) */
+  --brand-deep: #082f49; /* deep sky ink on the bright mark (sky-950) */
+  --brand-wash: rgba(14, 165, 233, 0.1); /* smo-500 wash */
+  --brand-ring: rgba(14, 165, 233, 0.35); /* focus ring */
 
   --amber: #e0a04b;
 
-  --sans: "Inter var", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, sans-serif;
-  --display: "Fraunces var", Georgia, "Times New Roman", serif;
-  --mono: "Geist Mono var", ui-monospace, "SF Mono", "JetBrains Mono",
+  --sans: "IBM Plex Sans Thai", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --display: "Noto Serif Thai", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", "JetBrains Mono",
     "Cascadia Code", Consolas, monospace;
 
   --r-sm: 8px;
@@ -104,7 +137,7 @@
   --r-xl: 20px;
 
   --content: 760px;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -154,13 +187,13 @@ select {
   height: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(240, 232, 218, 0.1);
+  background: rgba(231, 229, 228, 0.1);
   border-radius: 999px;
   border: 3px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(240, 232, 218, 0.2);
+  background: rgba(231, 229, 228, 0.2);
   background-clip: content-box;
 }
 ::-webkit-scrollbar-corner {
@@ -239,7 +272,7 @@ select {
 }
 .new-chat:hover {
   background: var(--surface-2);
-  border-color: rgba(240, 232, 218, 0.24);
+  border-color: rgba(231, 229, 228, 0.24);
 }
 .new-chat:active {
   transform: translateY(1px);
@@ -319,7 +352,7 @@ select {
   height: 7px;
   border-radius: 999px;
   background: var(--faint);
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
 }
 .engine-pill.online .engine-dot {
   background: var(--brand-bright);
@@ -336,13 +369,13 @@ select {
 }
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.45);
   }
   70% {
-    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 5px rgba(14, 165, 233, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
   }
 }
 
@@ -355,7 +388,7 @@ select {
   background:
     radial-gradient(
       1100px 460px at 78% -8%,
-      rgba(16, 185, 129, 0.05),
+      rgba(14, 165, 233, 0.05),
       transparent 60%
     ),
     var(--bg);
@@ -411,7 +444,7 @@ select {
   cursor: pointer;
 }
 .select-wrap select:hover {
-  border-color: rgba(240, 232, 218, 0.24);
+  border-color: rgba(231, 229, 228, 0.24);
   background: var(--surface-2);
 }
 .select-caret {
@@ -513,7 +546,7 @@ select {
   color: var(--amber);
 }
 .row.user .bubble {
-  color: #e6e2d8;
+  color: #e7e5e4;
 }
 
 /* inline + fenced code */
@@ -530,7 +563,7 @@ select {
   border: 1px solid var(--line-strong);
   border-radius: var(--r);
   overflow: hidden;
-  background: #100e0b;
+  background: #0c0a09;
   white-space: normal;
 }
 .code-head {
@@ -561,7 +594,7 @@ select {
 .code-copy:hover {
   background: var(--surface-2);
   color: var(--text);
-  border-color: rgba(240, 232, 218, 0.24);
+  border-color: rgba(231, 229, 228, 0.24);
 }
 .code-card pre {
   margin: 0;
@@ -570,7 +603,7 @@ select {
   font-family: var(--mono);
   font-size: 12.5px;
   line-height: 1.6;
-  color: #e8e4da;
+  color: #e7e5e4;
 }
 .code-card pre code {
   font-family: inherit;
@@ -592,7 +625,7 @@ select {
   height: 6px;
   border-radius: 999px;
   background: var(--brand);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.55);
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.55);
 }
 .activity-verb {
   font-size: 11px;
@@ -601,7 +634,7 @@ select {
   text-transform: uppercase;
   color: var(--brand-bright);
   background: var(--brand-wash);
-  border: 1px solid rgba(16, 185, 129, 0.22);
+  border: 1px solid rgba(14, 165, 233, 0.22);
   border-radius: 6px;
   padding: 1px 7px;
 }
@@ -665,7 +698,7 @@ select {
   font-size: 30px;
   line-height: 1;
   box-shadow:
-    0 8px 30px rgba(16, 185, 129, 0.22),
+    0 8px 30px rgba(14, 165, 233, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 .empty h1 {
@@ -729,7 +762,7 @@ select {
   border-color: var(--brand-ring);
   box-shadow:
     0 8px 34px rgba(0, 0, 0, 0.34),
-    0 0 0 3px rgba(16, 185, 129, 0.13);
+    0 0 0 3px rgba(14, 165, 233, 0.13);
 }
 #input {
   flex: 1;
@@ -759,7 +792,7 @@ select {
   border-radius: 12px;
   cursor: pointer;
   box-shadow:
-    0 2px 10px rgba(16, 185, 129, 0.28),
+    0 2px 10px rgba(14, 165, 233, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 .send .send-icon {
