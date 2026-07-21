@@ -4,52 +4,112 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Athene Desktop</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Geist+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <!-- left: brand + threads -->
     <aside class="sidebar">
       <div class="brand">
-        <span class="logo">A</span>
+        <span class="logo" aria-hidden="true">A</span>
         <span class="wordmark">Athene</span>
       </div>
-      <button id="new" class="new-chat">＋ New chat</button>
+      <button id="new" class="new-chat">
+        <span class="plus" aria-hidden="true">+</span> New chat
+      </button>
       <div class="threads-label">Recent</div>
       <ul id="threads" class="threads"></ul>
       <div class="sidebar-foot">
-        <span id="engine" class="engine">checking engines…</span>
+        <div class="engine-pill">
+          <span class="engine-dot" aria-hidden="true"></span>
+          <span id="engine" class="engine">checking engines…</span>
+        </div>
       </div>
     </aside>
 
     <!-- right: chat -->
     <main class="chat">
       <header class="topbar">
-        <span class="tag">desktop · local-first · free</span>
-        <select id="mode" title="Which engine to use">
-          <option value="auto">Auto (local → cloud)</option>
-          <option value="local">Local only (Ollama)</option>
-          <option value="cloud">Cloud only (free)</option>
-        </select>
+        <span class="topbar-tag">Local-first agent</span>
+        <div class="spacer"></div>
+        <div class="mode-field">
+          <label for="mode" class="mode-label">Engine</label>
+          <div class="select-wrap">
+            <select id="mode" title="Which engine to use">
+              <option value="athene">Athene agent (balanced)</option>
+              <option value="athene-fast">Athene agent (fast)</option>
+              <option value="athene-deep">Athene agent (deep)</option>
+              <option value="local">Local only (Ollama, no tools)</option>
+              <option value="cloud">Cloud only (free, no tools)</option>
+            </select>
+            <span class="select-caret" aria-hidden="true"></span>
+          </div>
+        </div>
       </header>
 
       <div id="messages" class="messages">
         <div class="empty" id="empty">
-          <div class="empty-logo">A</div>
+          <div class="empty-logo" aria-hidden="true">A</div>
           <h1>Ask Athene</h1>
-          <p>Runs your local Ollama models when available, free frontier models otherwise. Private by default.</p>
+          <p>
+            Athene drives its real agent: free frontier models with tools,
+            read-only by default. Pick Local or Cloud in the engine selector.
+          </p>
+          <div class="prompt-chips">
+            <button
+              class="prompt-chip"
+              type="button"
+              data-prompt="What does this project do? Give me a quick tour."
+            >
+              What does this project do?
+            </button>
+            <button
+              class="prompt-chip"
+              type="button"
+              data-prompt="Explain how the main entry point works, step by step."
+            >
+              Explain the main entry point
+            </button>
+            <button
+              class="prompt-chip"
+              type="button"
+              data-prompt="Find the most complex file in this codebase and summarize what it does."
+            >
+              Find the most complex file
+            </button>
+          </div>
         </div>
       </div>
 
       <footer class="composer">
         <div class="composer-inner">
-          <textarea id="input" rows="1" placeholder="Message Athene…  (Enter to send, Shift+Enter for a new line)"></textarea>
-          <button id="send">Send</button>
+          <textarea
+            id="input"
+            rows="1"
+            placeholder="Message Athene…"
+          ></textarea>
+          <button id="send" class="send" aria-label="Send message" title="Send">
+            <svg
+              class="send-icon"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 19V5M12 5l-6 6M12 5l6 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="composer-hint">
+          <span>Enter to send</span>
+          <span class="hint-sep" aria-hidden="true"></span>
+          <span>Shift + Enter for a new line</span>
         </div>
       </footer>
     </main>

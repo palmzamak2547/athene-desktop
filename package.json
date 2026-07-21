@@ -4,9 +4,12 @@
   "description": "Athene Desktop — a free, local-first AI chat app on the open Athene engine. Part of the Athene suite.",
   "type": "module",
   "main": "main.js",
+  "author": "Anuthin Danoi",
   "scripts": {
     "start": "electron .",
-    "lint": "node --check main.js && node --check lib/providers.js"
+    "lint": "node --check main.js && node --check lib/providers.js && node --check lib/engine.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win nsis"
   },
   "license": "MIT",
   "dependencies": {
@@ -14,6 +17,33 @@
     "ai": "^5.0.0"
   },
   "devDependencies": {
-    "electron": "^33.0.0"
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.athene.desktop",
+    "productName": "Athene",
+    "files": [
+      "main.js",
+      "preload.cjs",
+      "lib/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Athene-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
   }
 }
