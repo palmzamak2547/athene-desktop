@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="ai by CUVETSMO">
+  <path fill="#ffffff" d="M31 21 L25 6 L44 18 Z M69 21 L75 6 L56 18 Z"></path>
+  <path fill="#ffffff" fill-rule="evenodd" d="M27 17 H73 A15 15 0 0 1 88 32 V56 A15 15 0 0 1 73 71 H47 L31 85 L33 71 H27 A15 15 0 0 1 12 56 V32 A15 15 0 0 1 27 17 Z M38 44 m-10 0 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0 Z M62 44 m-10 0 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0 Z M50 51 L56 61 L44 61 Z"></path>
+  <circle cx="38" cy="44" r="3.4" fill="#ffffff"></circle>
+  <circle cx="62" cy="44" r="3.4" fill="#ffffff"></circle>
+</svg>
